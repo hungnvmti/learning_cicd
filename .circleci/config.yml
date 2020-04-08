@@ -1,21 +1,3 @@
-version: 2.1
-orbs:
-  ruby: circleci/ruby@0.1.2 
-
-jobs:
-  build:
-    docker:
-      - image: circleci/ruby:2.7.0-node-browsers
-    executor: ruby/default
-    steps:
-      - checkout
-      - run:
-          name: Which bundler?
-          command: bundle -v
-      - ruby/bundle-install
-
-
-
 version: 2.0
 
 jobs:
@@ -41,20 +23,12 @@ jobs:
         enabled: true
     working_directory: ~/learning_cicd
     environment:
-      HEROKU_APP: "nvhg" # define env var $HEROKU_APP
+      HEROKU_APP: "m1k" # define env var $HEROKU_APP
     steps:
       - checkout
       - run:
           name: Setup Heroku
           command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
-
-      - run:
-          command: |
-            git push heroku sequential-branch-filter:master
-            heroku run rake db:migrate
-            sleep 5 # sleep for 5 seconds to wait for dynos
-            heroku restart
-
 workflows:
   version: 2
   build-and-deploy:
