@@ -13,3 +13,56 @@ jobs:
           name: Which bundler?
           command: bundle -v
       - ruby/bundle-install
+
+
+
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.0-node-browsers
+      - image: circleci/postgres:9.4.12-alpine # services container
+    working_directory: ~/learning_cicd
+    steps:
+      - checkout
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Database setup
+      - run: bundle exec rake db:create db:schema:load
+
+      - run:
+          name: Run tests
+          command: rake
+
+  deploy:
+    machine:
+        enabled: true
+    working_directory: ~/learning_cicd
+    environment:
+      HEROKU_APP: "nvhg" # define env var $HEROKU_APP
+    steps:
+      - checkout
+      - run:
+          name: Setup Heroku
+          command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
+
+      - run:
+          command: |
+            git push heroku sequential-branch-filter:master
+            heroku run rake db:migrate
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: sequential-branch-filter
