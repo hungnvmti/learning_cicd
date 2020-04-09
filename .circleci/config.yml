@@ -12,6 +12,7 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: root
           PGPASSWORD: ""
+          SECRET_KEY_BASE: 837ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
     
     # Service container image available at `host: localhost`
     
@@ -71,11 +72,14 @@ jobs:
       - run: 
           name: Setup DB
           command: |
-            bundle exec rake db:environment:set db:drop db:create db:migrate db:seed
+            bundle exec rake db:migrate
+            bundle exec rake db:seed
+            
            
       # - run:
       #     name: Rollback migration 
       #     command: |
+      #.      bundle exec rake db:environment:set db:drop db:create db:migrate db:seed
       #       bundle exec rake db:rollback
       
       # - run: 
@@ -88,7 +92,7 @@ jobs:
           name: Running Test
           command: |
             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1k_pd
-            psql -h localhost -p 5432 -c "select * from posts" m1k_pd
+            psql -h localhost -p 5432 -c "select * from greetings" m1k_pd
 
 workflows:
   version: 2
