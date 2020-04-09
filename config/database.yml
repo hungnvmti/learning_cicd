@@ -12,7 +12,7 @@ development:
 production:
   <<: *default
   database: m1k
-  username: m1k
-  password: <%= ENV['DATABASE_PASSWORD'] %>
+  username: root
+  password: <%= ENV['PGPASSWORD'] %>
 
 

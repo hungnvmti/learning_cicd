@@ -9,16 +9,18 @@ jobs:
       - image: circleci/ruby:2.7.0-node-browsers
         environment:
           RAILS_ENV: production
-          PGHOST: localhost
+          PGHOST: 127.0.0.1
           PGUSER: root
+          PGPASSWORD: ""
     
     # Service container image available at `host: localhost`
     
-      - image: circleci/postgres:9.6.5-alpine-ram
+      - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: m1k
-          TEST_DATABASE_URL: postgresql://root@localhost/m1k
+          POSTGRES_PASSWORD: ""
+        
     steps:
       - checkout
 
@@ -40,35 +42,12 @@ jobs:
           key: rails-demo-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-      - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client-9.6
-      - run: whoami
-      - run: |
-          psql \
-          -d $TEST_DATABASE_URL \
-          -c "CREATE TABLE test (name char(25));"
-      - run: |
-          psql \
-          -d $TEST_DATABASE_URL \
-          -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
-      - run: |
-          psql \
-          -d $TEST_DATABASE_URL \
-          -c "SELECT * from test"
-      # - run:
-      #     name: Database Setup
-      #     command: |
-      #       bundle exec rake db:create
-      #       bundle exec rake db:migrate
-
-      # - run:
-      #     name: Parallel RSpec
-      #     command: bin/rails test
-
-      # Save artifacts
-      - store_test_results:
-          path: /tmp/test-results
-
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Database setup
+          command: bundle exec rails db:schema:load --trace
 workflows:
   version: 2
   build-and-deploy:
