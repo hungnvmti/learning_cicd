@@ -1,5 +1,14 @@
 class PostsController < ApplicationController
   def index
+    begin
+      ActiveRecord::Base.establish_connection # Establishes connection
+      ActiveRecord::Base.connection # Calls connection object
+      puts "CONNECTED!" if ActiveRecord::Base.connected? 
+      puts "NOT CONNECTED!" unless ActiveRecord::Base.connected?
+    rescue
+      puts "NOT CONNECTED!"
+    end
+
   	total = sum 1,1 
     # Post.create(name: "David", description: "Code Artist")
     post = Post.first
