@@ -95,7 +95,7 @@ jobs:
 
       - run:
           name: Parallel RSpec
-          command: bin/rails test
+          command: RAILS_ENV=test bundle exec rspec
 
 workflows:
   version: 2
