@@ -11,6 +11,6 @@ development:
 
 production:
   <<: *default
-  database: m1k_pd
+  database: m1kdb
   username: root
   password: ''

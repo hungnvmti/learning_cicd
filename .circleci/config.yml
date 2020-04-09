@@ -12,14 +12,14 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: root
           PGPASSWORD: ""
-          SECRET_KEY_BASE: 837ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
+          SECRET_KEY_BASE: 839ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
     
     # Service container image available at `host: localhost`
     
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: root
-          POSTGRES_DB: m1k_pd
+          POSTGRES_DB: m1kdb
           POSTGRES_PASSWORD: ""
         
     steps:
@@ -40,19 +40,19 @@ jobs:
 
       # Store bundle cache
       - save_cache:
-          key: rails-demo-{{ checksum "Gemfile.lock" }}
+          key: rails-m1k-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: Installing Dependencies
-          command: |
-            yarn install
-            sudo apt-get install postgresql-client
+      # - run:
+      #     name: Installing Dependencies
+      #     command: |
+      #       yarn install
+      #       sudo apt-get install postgresql-client
 
-       
+      - run: sudo apt install -y postgresql-client || true
       - run:
           name: Waiting for PostgreSQL to start
           command: |
@@ -67,15 +67,14 @@ jobs:
       - run:
           name: Running Test
           command: |
-            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1k_pd
+            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
       
       - run: 
           name: Setup DB
           command: |
+            bundle exec rake db:create db:schema:load --trace
             bundle exec rake db:migrate
             bundle exec rake db:seed
-            
-           
       # - run:
       #     name: Rollback migration 
       #     command: |
@@ -91,8 +90,8 @@ jobs:
       - run:
           name: Running Test
           command: |
-            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1k_pd
-            psql -h localhost -p 5432 -c "select * from greetings" m1k_pd
+            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+            psql -h localhost -p 5432 -c "select * from greetings" m1kdb
 
 workflows:
   version: 2

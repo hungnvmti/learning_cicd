@@ -10,10 +10,12 @@ class GreetingController < ApplicationController
     end
 
   	total = sum 1,1 
-    # Post.create(name: "David", description: "Code Artist")
-    greeting = Greeting.first
-  	@message = "Hello "+ greeting.title.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
-    #@message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+    Greeting.create(title: "Nvhung", description: "Code Artist")
+
+    Rails.logger.info("== db:seed start #{Greeting.first}")
+    #greeting = Greeting.first
+  	#@message = "Hello "+ greeting.title.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+    @message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
   
   end
 
