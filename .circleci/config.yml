@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/learning_cicd
     docker:
-      - image: ruby:2.7.0-node-browsers
+      - image: circleci/ruby:2.7.0-node-browsers
         environment:
           PG_HOST: localhost
           PG_USER: m1k
