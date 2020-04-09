@@ -69,9 +69,18 @@ jobs:
             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1k_pd
       
       - run: 
-          name: Set up DB
+          name: Setup DB
           command: |
             bundle exec rake db:schema:load --trace
+           
+      - run:
+          name: Rollback migration 
+          command: |
+            bundle exec rake db:rollback
+      
+      - run: 
+          name: Exec migration
+          command: |
             bundle exec rake db:migrate
 
       - run:
