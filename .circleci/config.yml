@@ -14,7 +14,7 @@ jobs:
     
     # Service container image available at `host: localhost`
     
-      - image: circleci/postgres:9.6.2-alpine
+      - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: m1k
