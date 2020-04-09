@@ -82,6 +82,7 @@ jobs:
           name: Exec migration
           command: |
             bundle exec rake db:migrate
+            bundle exec rake db:seed
 
       - run:
           name: Running Test
