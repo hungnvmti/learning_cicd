@@ -71,18 +71,18 @@ jobs:
       - run: 
           name: Setup DB
           command: |
-            bundle exec rake db:schema:load --trace
+            bundle exec rake db:environment:set db:drop db:create db:migrate db:seed
            
-      - run:
-          name: Rollback migration 
-          command: |
-            bundle exec rake db:rollback
+      # - run:
+      #     name: Rollback migration 
+      #     command: |
+      #       bundle exec rake db:rollback
       
-      - run: 
-          name: Exec migration
-          command: |
-            bundle exec rake db:migrate
-            bundle exec rake db:seed
+      # - run: 
+      #     name: Exec migration
+      #     command: |
+      #       bundle exec rake db:migrate
+      #       bundle exec rake db:seed
 
       - run:
           name: Running Test
