@@ -62,7 +62,7 @@ jobs:
               sleep 2
             done
             echo Failed waiting for Postgres && exit 1
-            
+
       - run:
           name: Running Test
           command: |
@@ -78,6 +78,7 @@ jobs:
           name: Running Test
           command: |
             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1k_pd
+            psql -h localhost -p 5432 -c "select * from posts" m1k_pd
 
 workflows:
   version: 2
