@@ -1,23 +1,34 @@
-version: 2.0
-
+version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/ruby:2.7.0-node-browsers
-      - image: circleci/postgres:9.4.12-alpine # services container
     working_directory: ~/learning_cicd
+    docker:
+      - image: ruby:2.7.0-node-browsers
+        environment:
+          PG_HOST: localhost
+          PG_USER: ubuntu
+          RAILS_ENV: test
+          RACK_ENV: test
+      # The following example uses the official postgres 9.6 image, you may also use circleci/postgres:9.6 
+      # which includes a few enhancements and modifications. It is possible to use either image.
+      - image: postgres:9.6-jessie
+        environment:
+          POSTGRES_USER: m1k
+          POSTGRES_DB: m1k
     steps:
       - checkout
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
-
-      # Database setup
-      - run: bundle exec rake db:create db:schema:load
-
+      - run: 
+          name: Set up DB
+          command: |
+            bundle exec rake db:create db:schema:load --trace
+            bundle exec rake db:migrate
       - run:
           name: Run tests
           command: rake
-
+        environment:
+          DATABASE_URL: "postgres://ubuntu@localhost:5432/m1k"
   deploy:
     machine:
         enabled: true
@@ -29,6 +40,7 @@ jobs:
       - run:
           name: Setup Heroku
           command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
+
 workflows:
   version: 2
   build-and-deploy:
