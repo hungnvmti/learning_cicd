@@ -11,7 +11,7 @@ development:
 
 production:
   <<: *default
-  database: m1k
+  database: m1k_pd
   username: root
   password: <%= ENV['PGPASSWORD'] %>
 
