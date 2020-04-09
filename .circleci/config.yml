@@ -6,7 +6,7 @@ jobs:
       - image: ruby:2.7.0-node-browsers
         environment:
           PG_HOST: localhost
-          PG_USER: ubuntu
+          PG_USER: m1k
           RAILS_ENV: test
           RACK_ENV: test
       # The following example uses the official postgres 9.6 image, you may also use circleci/postgres:9.6 
@@ -17,16 +17,14 @@ jobs:
           POSTGRES_DB: m1k
     steps:
       - checkout
-      # Bundle install dependencies
-      - run: bundle install --path vendor/bundle
+      - run:
+          name: Install Ruby Dependencies
+          command: bundle install
       - run: 
           name: Set up DB
           command: |
             bundle exec rake db:create db:schema:load --trace
             bundle exec rake db:migrate
-      - run:
-          name: Run tests
-          command: rake
         environment:
           DATABASE_URL: "postgres://ubuntu@localhost:5432/m1k"
   deploy:
