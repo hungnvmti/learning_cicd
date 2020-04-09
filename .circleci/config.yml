@@ -95,7 +95,11 @@ jobs:
 
       - run:
           name: Parallel RSpec
-          command: RAILS_ENV=test bundle exec rspec
+          command: |
+            RAILS_ENV=test bundle exec rake db:drop
+            RAILS_ENV=test bundle exec rake db:create
+            RAILS_ENV=test bundle exec rake db:migrate
+            bundle exec rspec
 
 workflows:
   version: 2
