@@ -7,8 +7,8 @@ jobs:
         environment:
           PG_HOST: localhost
           PG_USER: m1k
-          RAILS_ENV: test
-          RACK_ENV: test
+          RAILS_ENV: production
+          RACK_ENV: production
       # The following example uses the official postgres 9.6 image, you may also use circleci/postgres:9.6 
       # which includes a few enhancements and modifications. It is possible to use either image.
       - image: circleci/postgres:9.6-alpine
