@@ -15,6 +15,7 @@ jobs:
         environment:
           POSTGRES_USER: m1k
           POSTGRES_DB: m1k
+          DATABASE_URL: "postgres://m1k@127.0.0.1:5432/m1k"
     steps:
       - checkout
       - run:
@@ -25,8 +26,6 @@ jobs:
           command: |
             bundle exec rake db:create db:schema:load --trace
             bundle exec rake db:migrate
-        environment:
-          DATABASE_URL: "postgres://m1k@127.0.0.1:5432/m1k"
 workflows:
   version: 2
   build-and-deploy:
