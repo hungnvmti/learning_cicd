@@ -1,8 +1,8 @@
 class PostsController < ApplicationController
   def index
   	total = sum 1,1 
-  	#@message = "Hello "+ post.name.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
-    @message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+  	@message = "Hello "+ post.name.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+    #@message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
   
   end
 
