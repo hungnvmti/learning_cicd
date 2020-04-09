@@ -1,4 +1,4 @@
-class PostsController < ApplicationController
+class GreetingController < ApplicationController
   def index
     begin
       ActiveRecord::Base.establish_connection # Establishes connection
@@ -11,14 +11,14 @@ class PostsController < ApplicationController
 
   	total = sum 1,1 
     # Post.create(name: "David", description: "Code Artist")
-    post = Post.first
-  	@message = "Hello "+ post.name.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+    greeting = Greeting.first
+  	@message = "Hello "+ greeting.title.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
     #@message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
   
   end
 
-  # def post
-  # 	@post ||= Post.create(name: "David", description: "Code Artist")
+  # def greeting
+  # 	@greeting ||= Greeting.create(title: "David", description: "Code Artist")
   # end
 
   def sum (a,b)

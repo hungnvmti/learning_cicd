@@ -5,8 +5,4 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-Rails.logger.info("== db:seed start")
-
-Post.create(name: "David", description: "Code Artist")
-
-Rails.logger.info("== db:seed finish")
+Greeting.create(title: "David", description: "Code Artist")
