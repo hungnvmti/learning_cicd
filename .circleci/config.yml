@@ -2,9 +2,8 @@ version: 2
 jobs:
   build:
     working_directory: ~/learning_cicd
-    
+    parallelism: 3 # run three instances of this job in parallel
     # Primary container image where all commands run
-    
     docker:
       - image: circleci/ruby:2.7.0-node
         environment:
@@ -26,18 +25,17 @@ jobs:
       - checkout
 
       # Restore bundle cache
-
-      # - restore_cache:
-      #     keys:
-      #       - rails-demo-{{ checksum "Gemfile.lock" }}
-      #       - rails-demo-
+      - restore_cache:
+          keys:
+            - rails-demo-{{ checksum "Gemfile.lock" }}
+            - rails-demo-
 
       - run: ruby -v
 
       # Bundle install dependencies
-      - run:
-          name: Install dependencies
-          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs 4 --retry 3
+      - run: # Install Ruby dependencies
+          name: Bundle Install
+          command: bundle check --path vendor/bundle || bundle install --deployment
 
       - run: sudo apt install -y postgresql-client || true
 
@@ -72,14 +70,18 @@ jobs:
           command: |
             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
       
-      - run: 
-          name: Setup DB
-          command: |
-            RAILS_ENV="production" bundle exec rake db:create db:schema:load --trace
-            RAILS_ENV="production" bundle exec rake db:migrate
-            RAILS_ENV="production" bundle exec rake db:seed
-            RAILS_ENV="production" bundle exec rake db:prepare
-            RAILS_ENV="production" bundle exec rake db:load
+      - run:
+          name: Database setup
+          command: bin/rails db:schema:load --trace
+
+      # - run: 
+      #     name: Setup DB
+      #     command: |
+      #       RAILS_ENV="production" bundle exec rake db:create db:schema:load --trace
+      #       RAILS_ENV="production" bundle exec rake db:migrate
+      #       RAILS_ENV="production" bundle exec rake db:seed
+      #       RAILS_ENV="production" bundle exec rake db:prepare
+      #       RAILS_ENV="production" bundle exec rake db:load
       # - run:
       #     name: Rollback migration 
       #     command: |
