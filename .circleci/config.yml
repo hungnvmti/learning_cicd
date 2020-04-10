@@ -24,36 +24,18 @@ jobs:
     steps:
       - checkout
 
-      # Restore bundle cache
-      - restore_cache:
-          keys:
-            - rails-demo-{{ checksum "Gemfile.lock" }}
-            - rails-demo-
-
       - run: ruby -v
 
       # Bundle install dependencies
       - run: # Install Ruby dependencies
           name: Bundle Install
-          command: bundle check --path vendor/bundle || bundle install --deployment
-
+          command: bundle install
       - run: sudo apt install -y postgresql-client || true
 
-      # Store bundle cache
-      - save_cache:
-          key: rails-m1k-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      # - run:
-      #     name: Installing Dependencies
-      #     command: |
-      #       yarn install
-      #       sudo apt-get install postgresql-client
-
-      - run: sudo apt install -y postgresql-client || true
+     
       - run:
           name: Waiting for PostgreSQL to start
           command: |
@@ -72,7 +54,9 @@ jobs:
       
       - run:
           name: Database setup
-          command: bin/rails db:schema:load --trace
+          command: |
+            bin/rails db:schema:load --trace
+            RAILS_ENV="production" bundle exec rake db:seed
 
       # - run: 
       #     name: Setup DB
@@ -94,11 +78,11 @@ jobs:
       #       bundle exec rake db:migrate
       #       bundle exec rake db:seed
 
-      # - run:
-      #     name: Running Test
-      #     command: |
-      #       psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
-      #       psql -h localhost -p 5432 -c "select * from greetings" m1kdb
+      - run:
+          name: Running Test
+          command: |
+            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+            psql -h localhost -p 5432 -c "select * from greetings" m1kdb
 
       # - run:
       #     name: Parallel RSpec
