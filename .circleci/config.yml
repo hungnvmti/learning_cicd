@@ -33,7 +33,7 @@ jobs:
       #       - rails-demo-
 
       - run: ruby -v
-        
+
       # Bundle install dependencies
       - run:
           name: Install dependencies
@@ -78,6 +78,8 @@ jobs:
             RAILS_ENV="production" bundle exec rake db:create db:schema:load --trace
             RAILS_ENV="production" bundle exec rake db:migrate
             RAILS_ENV="production" bundle exec rake db:seed
+            RAILS_ENV="production" bundle exec rake db:prepare
+            RAILS_ENV="production" bundle exec rake db:load
       # - run:
       #     name: Rollback migration 
       #     command: |
@@ -90,19 +92,19 @@ jobs:
       #       bundle exec rake db:migrate
       #       bundle exec rake db:seed
 
-      - run:
-          name: Running Test
-          command: |
-            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
-            psql -h localhost -p 5432 -c "select * from greetings" m1kdb
+      # - run:
+      #     name: Running Test
+      #     command: |
+      #       psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+      #       psql -h localhost -p 5432 -c "select * from greetings" m1kdb
 
-      - run:
-          name: Parallel RSpec
-          command: |
-            RAILS_ENV="test" bundle exec rake db:drop
-            RAILS_ENV="test" bundle exec rake db:create
-            RAILS_ENV="test" bundle exec rake db:migrate
-            RAILS_ENV="test" bundle exec rspec
+      # - run:
+      #     name: Parallel RSpec
+      #     command: |
+      #       RAILS_ENV="test" bundle exec rake db:drop
+      #       RAILS_ENV="test" bundle exec rake db:create
+      #       RAILS_ENV="test" bundle exec rake db:migrate
+      #       RAILS_ENV="test" bundle exec rspec
 
 workflows:
   version: 2
