@@ -6,7 +6,7 @@ jobs:
     # Primary container image where all commands run
     
     docker:
-      - image: circleci/ruby:2.7.0-node-browsers
+      - image: circleci/ruby:2.7.0-node
         environment:
           RAILS_ENV: production
           PGHOST: 127.0.0.1
@@ -26,11 +26,14 @@ jobs:
       - checkout
 
       # Restore bundle cache
-      - restore_cache:
-          keys:
-            - rails-demo-{{ checksum "Gemfile.lock" }}
-            - rails-demo-
 
+      # - restore_cache:
+      #     keys:
+      #       - rails-demo-{{ checksum "Gemfile.lock" }}
+      #       - rails-demo-
+
+      - run: ruby -v
+        
       # Bundle install dependencies
       - run:
           name: Install dependencies
