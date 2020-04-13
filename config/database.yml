@@ -15,6 +15,6 @@ test:
 
 production:
   <<: *default
-  database: m1kdb
-  username: root
-  password: ''
+  database: <%= ENV["PGDATABASE"] %>
+  username: <%= ENV["PGUSER"] %>
+  password: <%= ENV["PGPASSWORD"] %>
