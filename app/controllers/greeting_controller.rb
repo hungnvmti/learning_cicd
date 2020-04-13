@@ -4,6 +4,7 @@ class GreetingController < ApplicationController
       ActiveRecord::Base.establish_connection # Establishes connection
       ActiveRecord::Base.connection # Calls connection object
       puts "CONNECTED!" if ActiveRecord::Base.connected? 
+      puts ActiveRecord::Base.connection.tables
       puts "NOT CONNECTED!" unless ActiveRecord::Base.connected?
     rescue
       puts "NOT CONNECTED!"
@@ -11,7 +12,7 @@ class GreetingController < ApplicationController
 
   	total = sum 1,1 
 
-    greeting = Greeting.first.to_sql
+   # greeting = Greeting.first.to_sql
   	@message = "Hello #{greeting.to_s}, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = #{total.to_s}"  
   end
 
