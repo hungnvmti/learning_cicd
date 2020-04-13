@@ -1,11 +1,9 @@
-version: 2
+version: 2.0
+
 jobs:
   build:
-    working_directory: ~/learning_cicd
-    parallelism: 3 # run three instances of this job in parallel
-    # Primary container image where all commands run
     docker:
-      - image: circleci/ruby:2.7.0-node
+      - image: circleci/ruby:2.7.0-node # primary container - where job steps are run
         environment:
           RAILS_ENV: production
           PGHOST: 127.0.0.1
@@ -13,83 +11,42 @@ jobs:
           PGUSER: m1k
           PGPASSWORD: "2020@psql"
           SECRET_KEY_BASE: 839ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
-    # Service container image available at `host: localhost`
-    
-      - image: circleci/postgres:9.5-alpine
+      - image: circleci/postgres:9.5-alpine # services container
         environment:
           POSTGRES_USER: m1k
           POSTGRES_DB: m1kdb
           POSTGRES_PASSWORD: "2020@psql"
-        
+    working_directory: ~/learning_cicd
     steps:
       - checkout
-
-      - run: ruby -v
-
       # Bundle install dependencies
-      - run: # Install Ruby dependencies
-          name: Bundle Install
-          command: bundle install
-      - run: sudo apt install -y postgresql-client || true
+      - run: bundle install --path vendor/bundle
 
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-     
-      - run:
-          name: Waiting for PostgreSQL to start
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 5432 && echo Success && exit 0
-              echo -n .
-              sleep 2
-            done
-            echo Failed waiting for Postgres && exit 1
-
-      - run:
-          name: Running Test
-          command: |
-            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
-      
-      - run:
-          name: Database setup
-          command: |
-            bin/rails db:schema:load --trace
-
-      # - run: 
-      #     name: Setup DB
-      #     command: |
-      #       RAILS_ENV="production" bundle exec rake db:create db:schema:load --trace
-      #       RAILS_ENV="production" bundle exec rake db:migrate
-      #       RAILS_ENV="production" bundle exec rake db:seed
-      #       RAILS_ENV="production" bundle exec rake db:prepare
-      #       RAILS_ENV="production" bundle exec rake db:load
-      # - run:
-      #     name: Rollback migration 
-      #     command: |
-      #.      bundle exec rake db:environment:set db:drop db:create db:migrate db:seed
-      #       bundle exec rake db:rollback
-      
-      # - run: 
-      #     name: Exec migration
-      #     command: |
-      #       bundle exec rake db:migrate
-      #       bundle exec rake db:seed
-
-      - run:
-          name: Running Test
-          command: |
-            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
-            psql -h localhost -p 5432 -c "select * from greetings" m1kdb
+      # Database setup
+      - run: bundle exec rake db:create db:schema:load
 
       # - run:
-      #     name: Parallel RSpec
-      #     command: |
-      #       RAILS_ENV="test" bundle exec rake db:drop
-      #       RAILS_ENV="test" bundle exec rake db:create
-      #       RAILS_ENV="test" bundle exec rake db:migrate
-      #       RAILS_ENV="test" bundle exec rspec
+      #     name: Run tests
+      #     command: rake
+
+  deploy:
+    machine:
+        enabled: true
+    working_directory: ~/learning_cicd
+    environment:
+      HEROKU_APP: "m1k" # define env var $HEROKU_APP
+    steps:
+      - checkout
+      # - run:
+      #     name: Setup Heroku
+      #     command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
+
+      - run:
+          command: |
+            git push heroku sequential-branch-filter:master
+            heroku run rake db:migrate
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
 
 workflows:
   version: 2
@@ -102,3 +59,111 @@ workflows:
           filters:
             branches:
               only: sequential-branch-filter
+
+
+
+
+# version: 2
+# jobs:
+#   build:
+#     working_directory: ~/learning_cicd
+#     parallelism: 3 # run three instances of this job in parallel
+#     # Primary container image where all commands run
+#     docker:
+#       - image: circleci/ruby:2.7.0-node
+#         environment:
+#           RAILS_ENV: production
+#           PGHOST: 127.0.0.1
+#           PGDATABASE: m1kdb
+#           PGUSER: m1k
+#           PGPASSWORD: "2020@psql"
+#           SECRET_KEY_BASE: 839ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
+#     # Service container image available at `host: localhost`
+    
+#       - image: circleci/postgres:9.5-alpine
+#         environment:
+#           POSTGRES_USER: m1k
+#           POSTGRES_DB: m1kdb
+#           POSTGRES_PASSWORD: "2020@psql"
+        
+#     steps:
+#       - checkout
+
+#       - run: ruby -v
+
+#       # Bundle install dependencies
+#       - run: # Install Ruby dependencies
+#           name: Bundle Install
+#           command: bundle install
+#       - run: sudo apt install -y postgresql-client || true
+
+#       - run:
+#           name: Wait for DB
+#           command: dockerize -wait tcp://localhost:5432 -timeout 1m
+     
+#       - run:
+#           name: Waiting for PostgreSQL to start
+#           command: |
+#             for i in `seq 1 10`;
+#             do
+#               nc -z localhost 5432 && echo Success && exit 0
+#               echo -n .
+#               sleep 2
+#             done
+#             echo Failed waiting for Postgres && exit 1
+
+#       - run:
+#           name: Running Test
+#           command: |
+#             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+      
+#       - run:
+#           name: Database setup
+#           command: |
+#             bin/rails db:schema:load --trace
+
+#       # - run: 
+#       #     name: Setup DB
+#       #     command: |
+#       #       RAILS_ENV="production" bundle exec rake db:create db:schema:load --trace
+#       #       RAILS_ENV="production" bundle exec rake db:migrate
+#       #       RAILS_ENV="production" bundle exec rake db:seed
+#       #       RAILS_ENV="production" bundle exec rake db:prepare
+#       #       RAILS_ENV="production" bundle exec rake db:load
+#       # - run:
+#       #     name: Rollback migration 
+#       #     command: |
+#       #.      bundle exec rake db:environment:set db:drop db:create db:migrate db:seed
+#       #       bundle exec rake db:rollback
+      
+#       # - run: 
+#       #     name: Exec migration
+#       #     command: |
+#       #       bundle exec rake db:migrate
+#       #       bundle exec rake db:seed
+
+#       - run:
+#           name: Running Test
+#           command: |
+#             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+#             psql -h localhost -p 5432 -c "select * from greetings" m1kdb
+
+#       # - run:
+#       #     name: Parallel RSpec
+#       #     command: |
+#       #       RAILS_ENV="test" bundle exec rake db:drop
+#       #       RAILS_ENV="test" bundle exec rake db:create
+#       #       RAILS_ENV="test" bundle exec rake db:migrate
+#       #       RAILS_ENV="test" bundle exec rspec
+
+# workflows:
+#   version: 2
+#   build-and-deploy:
+#     jobs:
+#       - build
+#       - deploy:
+#           requires:
+#             - build
+#           filters:
+#             branches:
+#               only: sequential-branch-filter
