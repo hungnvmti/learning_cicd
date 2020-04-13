@@ -56,7 +56,7 @@ jobs:
           name: Database setup
           command: |
             bin/rails db:schema:load --trace
-            RAILS_ENV="production" bundle exec rake db:seed
+            RAILS_ENV="production" bundle exec rake db:reset
 
       # - run: 
       #     name: Setup DB
