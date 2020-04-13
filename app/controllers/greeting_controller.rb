@@ -10,12 +10,11 @@ class GreetingController < ApplicationController
     end
 
   	total = sum 1,1 
-    #Greeting.create(title: "Nvhung2", description: "Code Artist")
+    Greeting.create(title: "HungNV", description: "Code Artist")
 
-    Rails.logger.info("== db:seed start #{Greeting.where(title: 'David').first.try(:id))}")
     #greeting = Greeting.first
-  	#@message = "Hello "+ greeting.title.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
-    @message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+  	@message = "Hello "+ greeting.title.to_s + ", how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
+    # @message = "Hello, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = " + total.to_s
   
   end
 
