@@ -10,17 +10,16 @@ jobs:
           RAILS_ENV: production
           PGHOST: 127.0.0.1
           PGDATABASE: m1kdb
-          PGUSER: root
-          PGPASSWORD: ""
+          PGUSER: m1k
+          PGPASSWORD: "2020@psql"
           SECRET_KEY_BASE: 839ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
-          DISABLE_DATABASE_ENVIRONMENT_CHECK: 1
     # Service container image available at `host: localhost`
     
       - image: circleci/postgres:9.5-alpine
         environment:
-          POSTGRES_USER: root
+          POSTGRES_USER: m1k
           POSTGRES_DB: m1kdb
-          POSTGRES_PASSWORD: ""
+          POSTGRES_PASSWORD: "2020@psql"
         
     steps:
       - checkout
@@ -57,7 +56,6 @@ jobs:
           name: Database setup
           command: |
             bin/rails db:schema:load --trace
-            RAILS_ENV="production" bundle exec rake db:reset
 
       # - run: 
       #     name: Setup DB
