@@ -11,8 +11,8 @@ class GreetingController < ApplicationController
 
   	total = sum 1,1 
 
-    greeting = Greeting.first
-  	@message = "Hello #{greeting.title.to_s}, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = #{total.to_s}"  
+    greeting = Greeting.first.to_sql
+  	@message = "Hello #{greeting.to_s}, how are you today? Could you help me check the results? it's correct or not: 1 + 1 = #{total.to_s}"  
   end
 
   # def greeting
