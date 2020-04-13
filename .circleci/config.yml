@@ -12,7 +12,7 @@ jobs:
           PGUSER: root
           PGPASSWORD: ""
           SECRET_KEY_BASE: 839ad58b0eac562b502c53184697579da577cd6d07e4775e9aeb1a9a10dc926dbcd14b1c89757d7d65cb40b35b6d7564330d07503f25812364dbd7ef13e002b7
-    
+          DISABLE_DATABASE_ENVIRONMENT_CHECK: 1
     # Service container image available at `host: localhost`
     
       - image: circleci/postgres:9.5-alpine
