@@ -3,7 +3,7 @@ class GreetingController < ApplicationController
     begin
       ActiveRecord::Base.establish_connection # Establishes connection
       ActiveRecord::Base.connection # Calls connection object
-      puts "CONNECTED! #{ActiveRecord::Base.connection.tables}" if ActiveRecord::Base.connected? 
+      puts "CONNECTED! current db #{ActiveRecord::Base.connection.current_database} tables: #{ActiveRecord::Base.connection.tables}" if ActiveRecord::Base.connected? 
       puts "NOT CONNECTED!" unless ActiveRecord::Base.connected?
     rescue
       puts "NOT CONNECTED!"
