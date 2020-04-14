@@ -47,7 +47,7 @@ jobs:
       # Database setup
       - run: bundle exec rake db:create db:schema:load
       - run:
-        name: Check table
+          name: Check table
           command: |
             psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
             psql -h localhost -p 5432 -c "select * from greetings" m1kdb
