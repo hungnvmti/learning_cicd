@@ -54,10 +54,10 @@ jobs:
 
   deploy:
     docker:
-       - image: docker:17.05.0-ce-git
+      - image: docker:17.05.0-ce-git
 
     machine:
-        enabled: true
+      enabled: true
     working_directory: ~/learning_cicd
     environment:
       HEROKU_APP: "m1k" # define env var $HEROKU_APP
@@ -67,9 +67,6 @@ jobs:
            name: Deploy Master to Heroku
            command: |
             git push https://heroku:1b81aa43-7f6f-4f6d-9984-75d56d85e2ff@git.heroku.com/m1k.git master
-            heroku run rake db:migrate
-            sleep 5 # sleep for 5 seconds to wait for dynos
-            heroku restart
       # - run:
       #     name: Setup Heroku
       #     command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
