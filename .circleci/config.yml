@@ -22,12 +22,35 @@ jobs:
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
 
-      # Database setup
-      - run: bundle exec rake db:create db:schema:load
+      - run: sudo apt install -y postgresql-client || true
 
       - run:
-          name: Run tests
-          command: rake
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+     
+      - run:
+          name: Waiting for PostgreSQL to start
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 2
+            done
+            echo Failed waiting for Postgres && exit 1
+
+      - run:
+          name: Running Test
+          command: |
+            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+
+      # Database setup
+      - run: bundle exec rake db:create db:schema:load
+      - run:
+        name: Check table
+          command: |
+            psql -h localhost -p 5432 -c "select table_name from information_schema.tables where table_schema = 'public'" m1kdb
+            psql -h localhost -p 5432 -c "select * from greetings" m1kdb
 
   deploy:
     machine:
