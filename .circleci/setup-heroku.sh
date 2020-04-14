@@ -6,6 +6,7 @@ git --version
 git remote -v
 heroku login -i
 heroku git:remote -a m1k
+heroku stack:set heroku-18
 git push heroku master
 heroku run rake db:migrate
 sleep 5 # sleep for 5 seconds to wait for dynos
