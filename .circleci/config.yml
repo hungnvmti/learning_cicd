@@ -102,12 +102,7 @@ jobs:
       - run:
           name: Setup Heroku
           command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
-      - run:
-          command: |
-            git push heroku master
-            heroku run rake db:migrate
-            sleep 5 # sleep for 5 seconds to wait for dynos
-            heroku restart
+
 workflows:
   version: 2
   build-and-deploy:
