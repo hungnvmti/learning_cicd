@@ -25,9 +25,9 @@ jobs:
       # Database setup
       - run: bundle exec rake db:create db:schema:load
 
-      # - run:
-      #     name: Run tests
-      #     command: rake
+      - run:
+          name: Run tests
+          command: rake
 
   deploy:
     machine:
