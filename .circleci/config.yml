@@ -25,11 +25,10 @@ jobs:
       - checkout
 
       - run: ruby -v
-
       # Bundle install dependencies
       - run: # Install Ruby dependencies
           name: Bundle Install
-          command: bundle install
+          command: bundle install --path vendor/bundle
       - run: sudo apt install -y postgresql-client || true
 
       - run:
@@ -56,6 +55,8 @@ jobs:
           name: Database setup
           command: |
             bin/rails db:schema:load --trace
+
+      # bundle exec rake db:create db:schema:load
 
       # - run: 
       #     name: Setup DB
@@ -91,17 +92,22 @@ jobs:
       #       RAILS_ENV="test" bundle exec rake db:migrate
       #       RAILS_ENV="test" bundle exec rspec
   deploy:
-    docker:
-      - image: docker:17.05.0-ce-git
-      
+    machine:
+        enabled: true
     working_directory: ~/learning_cicd
     environment:
       HEROKU_APP: "m1k" # define env var $HEROKU_APP
     steps:
       - checkout
+      # - run:
+      #     name: Setup Heroku
+      #     command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
       - run:
           command: |
-            git push https://heroku:1b81aa43-7f6f-4f6d-9984-75d56d85e2ff@git.heroku.com/m1k.git master
+            git push heroku master
+            heroku run rake db:migrate
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
 workflows:
   version: 2
   build-and-deploy:
