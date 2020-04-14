@@ -93,9 +93,7 @@ jobs:
   deploy:
     docker:
       - image: docker:17.05.0-ce-git
-
-    machine:
-      enabled: true
+      
     working_directory: ~/learning_cicd
     environment:
       HEROKU_APP: "m1k" # define env var $HEROKU_APP
