@@ -53,6 +53,9 @@ jobs:
             psql -h localhost -p 5432 -c "select * from greetings" m1kdb
 
   deploy:
+    docker:
+       - image: docker:17.05.0-ce-git
+
     machine:
         enabled: true
     working_directory: ~/learning_cicd
@@ -60,16 +63,23 @@ jobs:
       HEROKU_APP: "m1k" # define env var $HEROKU_APP
     steps:
       - checkout
+      - run:
+           name: Deploy Master to Heroku
+           command: |
+            git push https://heroku:1b81aa43-7f6f-4f6d-9984-75d56d85e2ff@git.heroku.com/m1k.git master
+            heroku run rake db:migrate
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
       # - run:
       #     name: Setup Heroku
       #     command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
 
-      - run:
-          command: |
-            git push heroku sequential-branch-filter:master
-            heroku run rake db:migrate
-            sleep 5 # sleep for 5 seconds to wait for dynos
-            heroku restart
+      # - run:
+      #     command: |
+      #       git push heroku sequential-branch-filter:master
+      #       heroku run rake db:migrate
+      #       sleep 5 # sleep for 5 seconds to wait for dynos
+      #       heroku restart
 
 workflows:
   version: 2
@@ -81,7 +91,7 @@ workflows:
             - build
           filters:
             branches:
-              only: sequential-branch-filter
+              only: master
 
 
 
