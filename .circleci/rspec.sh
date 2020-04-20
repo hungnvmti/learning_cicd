@@ -11,10 +11,6 @@ export STAGE_BUCKET="m1k-stg-conf"
 export DEV_BUCKET="m1k-dev-conf"
 export LATEST="latest-dev"
 
-# hard code for debug
-export DEV_AWS_ACCESS_KEY_ID="AKIATOA52VWDRINC4O7Q"
-export DEV_AWS_SECRET_ACCESS_KEY="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"
-
 echo "Build Branch: ${CIRCLE_BRANCH}"
 
 configure() {
