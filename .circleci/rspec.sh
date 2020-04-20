@@ -52,7 +52,8 @@ configure() {
 }
 
 clone() {
-  git clone -b ${CIRCLE_BRANCH} git@github.com:hungnvmti/learning_cicd.git ~/learning_cicd
+  git branch 
+  # git clone -b ${CIRCLE_BRANCH} git@github.com:hungnvmti/learning_cicd.git ~/learning_cicd
 }
 
 setup() {
@@ -72,8 +73,8 @@ run() {
 rspec() {
   configure
   clone
-  setup
-  run
+ # setup
+ # run
 }
 
 rspec

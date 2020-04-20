@@ -143,23 +143,23 @@ workflows:
                 - rc/release
                 - stage/release
                 - prod/release
-      - build:
-          requires:
-            - rspec
-          filters:
-            branches:
-              only:
-                - dev/release
-                - rc/release
-                - stage/release
-                - prod/release
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - dev/release
-                - rc/release
-                - stage/release
-                - prod/release
+      # - build:
+      #     requires:
+      #       - rspec
+      #     filters:
+      #       branches:
+      #         only:
+      #           - dev/release
+      #           - rc/release
+      #           - stage/release
+      #           - prod/release
+      # - deploy:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only:
+      #           - dev/release
+      #           - rc/release
+      #           - stage/release
+      #           - prod/release
