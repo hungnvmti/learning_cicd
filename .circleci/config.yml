@@ -113,9 +113,7 @@ jobs:
             - "54:b6:c6:0d:a8:03:23:a3:76:8d:94:6d:e0:d7:f5:0a"
       - run:
           command: |
-            pwd 
-            ls
-            bash ~/.circleci/rspec.sh
+            bash .circleci/rspec.sh
   deploy:
     machine:
         enabled: true
