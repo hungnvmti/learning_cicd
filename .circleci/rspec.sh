@@ -56,10 +56,23 @@ setup() {
   mv config/database.yml.example config/database.yml
   # mv Gemfile.local.example Gemfile.local
   bundle install --jobs=4 --retry=3 --path vendor/bundle  --without development
+  sudo apt install -y postgresql-client || true
+
+  echo "Wait for DB"
+  dockerize -wait tcp://localhost:5432 -timeout 1m
+
+  echo "Waiting for PostgreSQL to start"
+  for i in `seq 1 10`;
+  do
+    nc -z localhost 5432 && echo Success && exit 0
+    echo -n .
+    sleep 2
+  done
+  echo Failed waiting for Postgres && exit 1
+
 }
 
 run() {
-  dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
   bundle exec rails db:create
   bundle exec rails db:migrate
   bundle exec rspec
