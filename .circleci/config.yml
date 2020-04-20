@@ -11,7 +11,7 @@ jobs:
           PGHOST: 127.0.0.1
           PGDATABASE: m1kdb
           PGUSER: m1k
-          PGPASSWORD: "2020@psql"
+          PGPASSWORD: ""
           SECRET_KEY_BASE: devsecretkeybase2020
     # Service container image available at `host: localhost`
     
@@ -19,7 +19,7 @@ jobs:
         environment:
           POSTGRES_USER: m1k
           POSTGRES_DB: m1kdb
-          POSTGRES_PASSWORD: "2020@psql"
+          POSTGRES_PASSWORD: ""
         
     steps:
       - checkout
