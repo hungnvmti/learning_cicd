@@ -108,9 +108,7 @@ jobs:
           POSTGRES_PASSWORD: ''
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "54:b6:c6:0d:a8:03:23:a3:76:8d:94:6d:e0:d7:f5:0a"
+     
       - run:
           command: |
             bash .circleci/rspec.sh

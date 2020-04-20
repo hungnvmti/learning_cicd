@@ -51,13 +51,8 @@ configure() {
   set -x
 }
 
-clone() {
-  git branch 
-  # git clone -b ${CIRCLE_BRANCH} git@github.com:hungnvmti/learning_cicd.git ~/learning_cicd
-}
-
 setup() {
-  cd ~/${CIRCLE_PROJECT_REPONAME}
+  # cd ~/${CIRCLE_PROJECT_REPONAME}
   mv config/database.yml.example config/database.yml
   # mv Gemfile.local.example Gemfile.local
   bundle install --jobs=4 --retry=3 --path vendor/bundle  --without development
@@ -72,9 +67,8 @@ run() {
 
 rspec() {
   configure
-  clone
- # setup
- # run
+  setup
+  run
 }
 
 rspec
