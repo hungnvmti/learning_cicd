@@ -43,6 +43,7 @@ configure() {
     *) echo "unkown branch"
        exit 1
   esac
+  echo "key : ${DEV_AWS_ACCESS_KEY_ID}"
   set -x
 }
 
