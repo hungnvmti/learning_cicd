@@ -91,6 +91,28 @@ jobs:
       #       RAILS_ENV="test" bundle exec rake db:create
       #       RAILS_ENV="test" bundle exec rake db:migrate
       #       RAILS_ENV="test" bundle exec rspec
+  rspec:
+    docker:
+      - image: circleci/ruby:2.7.0-node
+        environment:
+          RAILS_ENV: test
+          db_host: 127.0.0.1
+          db_test_name: m1k_test
+          db_user: m1k
+          db_password: ''
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: m1k
+          POSTGRES_DB: m1k_test
+          POSTGRES_PASSWORD: ''
+    steps:
+      - checkout:
+          path: ~/learning_cicd
+      - add_ssh_keys:
+          fingerprints:
+            - "54:b6:c6:0d:a8:03:23:a3:76:8d:94:6d:e0:d7:f5:0a"
+      - run:
+          command: bash ~/learning_cicd/.circleci/rspec.sh
   deploy:
     machine:
         enabled: true
